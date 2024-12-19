@@ -16,6 +16,16 @@ import util.Vec2;
 public class GameApp extends Application {
 
     private Image testIm = new Image("file:test.png");
+    private double left = -100;
+    private double right = 100;
+    private double top = 100;
+    private double bottom = 100;
+    private double near = 5;
+    private double far = 100;
+
+    public void projCam() {
+        
+    }
 
     public void start(Stage stage) {
         stage.setTitle("Isometric");
@@ -35,6 +45,9 @@ public class GameApp extends Application {
         AnimationTimer timer = new AnimationTimer() {
             long prevTime = 0;
             public void handle(long t) {
+
+
+
                 g.setFill(Color.WHITE);
                 g.fillRect(0, 0, 800, 800);
 
