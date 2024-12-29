@@ -41,7 +41,7 @@ java {
 application {
     // Define the main class for the application.
     if(!project.hasProperty('main')) {
-        mainClass = 'javafx.application.Application'
+        mainClass = 'isometricgame.GameApp'
     } else {
         mainClass = project.findProperty('main').toString()
     }

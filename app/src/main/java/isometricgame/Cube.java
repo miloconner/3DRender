@@ -47,7 +47,11 @@ public class Cube {
         endpoints3d[7] = new Vec3(xCenter - size/2, yCenter + size/2, zCenter + size/2); //bottom left}
 
 
+        convertEndpoints();
 
+    }
+
+    public void convertEndpoints() {
         double[] face1XPoints = {endpoints3d[0].getX(), endpoints3d[1].getX(), endpoints3d[2].getX(), endpoints3d[3].getX()};
         double[] face2XPoints = {endpoints3d[0].getX(), endpoints3d[3].getX(), endpoints3d[7].getX(), endpoints3d[4].getX()};
         double[] face3XPoints = {endpoints3d[4].getX(), endpoints3d[5].getX(), endpoints3d[6].getX(), endpoints3d[7].getX()};
@@ -68,15 +72,16 @@ public class Cube {
         face4 = new Face(face4XPoints, face4YPoints);
         face5 = new Face(face5XPoints, face5YPoints);
         face6 = new Face(face6XPoints, face6YPoints);
-
     }
 
     public Cube rotate(double theta, Vec3 axis) {
         Cube rCube = new Cube(0, 0, 0, size);
         for (int i = 0; i < endpoints3d.length; i++) {
             rCube.endpoints3d[i] = endpoints3d[i].rotate(theta, axis);
+            System.out.println(rCube.endpoints3d[i]);
             System.out.println(endpoints3d[i].rotate(theta, axis));
         }
+        rCube.convertEndpoints();
         return rCube;
     }
 

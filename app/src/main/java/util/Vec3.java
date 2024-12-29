@@ -51,22 +51,24 @@ public class Vec3 {
     z += other.z;
   }
 
-  public void normalize() {
-    double norm = Math.sqrt(x*x + y*y + z*z);
-    x = x/norm;
-    y = y/norm;
-    z = z/norm;
-  }
-
   public Vec2 projVec2(double theta, double cX, double cY, double oX, double oY, double oZ) {
     double nX = ((x - oX) * Math.cos(theta) - (z - oZ) * Math.sin(theta)) * cX;
     double nY = ((y - oY) + (x - oX) * Math.sin(theta) + (z - oZ) * Math.cos(theta)) * cY;
     return new Vec2(nX + oX, nY + oY + oZ);
   }
 
+  public void normalize() {
+    double norm = Math.sqrt(x*x + y*y + z*z);
+    if (norm == 0) return;
+    x = x/norm;
+    y = y/norm;
+    z = z/norm;
+  }
+
   public Vec3 rotate(double theta, Vec3 axis) {
-    Vec3 u = new Vec3(axis.getX(), axis.getY(), axis.getZ());
+    Vec3 u = axis.clone();
     u.normalize();
+
     double qW = Math.cos(theta/2);
     double qX = u.getX() * Math.sin(theta/2);
     double qY = u.getY() * Math.sin(theta/2);
@@ -76,8 +78,17 @@ public class Vec3 {
     double qYI = -qY;
     double qZI = -qZ;
 
-    double qp = qW * 0 + qX * x + qY * y + qZ * z;
+    // q*v
+    double tW = -qX * x - qY * y - qZ * z;
+    double tX = qW * x + qY * z - qZ * y;
+    double tY = qW * y + qZ * x - qX * z;
+    double tZ = qW * z + qX * y - qY * x;
 
-    return new Vec3(qp * qXI, qp * qYI, qp * qZI);
+    // q*v * q^-1
+    double rX = tW * qXI + tX * qW + tY * qZI - tZ * qYI;
+    double rY = tW * qYI + tY * qW + tZ * qXI - tX * qZI;
+    double rZ = tW * qZI + tZ * qW + tX * qYI - tY * qXI;
+
+    return new Vec3(rX, rY, rZ);
   }
 }

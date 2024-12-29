@@ -43,10 +43,10 @@ public class GameApp extends Application {
         // cubes.add(new Cube(x*20, y*20, z*20));
         // }
         // }
-        Cube oCube = new Cube(200, 400, 0, 60.0);
-        cubes.add(oCube);
+        // Cube oCube = new Cube(200, 400, 0, 60.0);
+        // cubes.add(oCube);
         Cube nCube = new Cube(400, 400, 0, 60.0);
-        cubes.add(nCube.rotate(Math.PI / 4, new Vec3(1, 0, 0)));
+        cubes.add(nCube.rotate(Math.PI / 4, new Vec3(1, 1, 0)));
 
         AnimationTimer timer = new AnimationTimer() {
             long prevTime = 0;
