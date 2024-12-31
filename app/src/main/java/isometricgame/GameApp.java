@@ -38,8 +38,14 @@ public class GameApp extends Application {
         stage.setScene(new Scene(new StackPane(canvas)));
         GraphicsContext g = canvas.getGraphicsContext2D();
 
+        ArrayList<Cube> cubes = new ArrayList<>();
+
+        Cube nCube = new Cube(400, 400, 0, 60.0);
+        cubes.add(nCube);
+
         Vec2 lastPos = new Vec2();
 
+        //required to initialize last pos value
         canvas.setOnMousePressed(event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
                 lastPos.set(event.getSceneX(), event.getSceneY());
@@ -47,24 +53,22 @@ public class GameApp extends Application {
         });
 
         canvas.setOnMouseDragged(event -> {
-            
+            if (event.getButton() == MouseButton.SECONDARY) {
+                Vec2 deltaPos = new Vec2(event.getSceneX(), event.getSceneY()).add(lastPos.negative());
+                lastPos.set(event.getSceneX(), event.getSceneY());
+
+                for (Cube cube : cubes) {
+                    cube.rotateThis(deltaPos.getX() / 800.0, new Vec3(0, 1, 0));
+                    cube.rotateThis(deltaPos.getY() / 800.0, new Vec3(1, 0, 0));
+                }
+            }
         });
 
         canvas.setOnMouseReleased(event -> {
 
         });
 
-        ArrayList<Cube> cubes = new ArrayList<>();
-        // for (int x = 0; x < 800/20; x++) {
-        // for (int y = 0; y < 800/20; y++) {
-        // for (int z = 0; z < 800/20; z++)
-        // cubes.add(new Cube(x*20, y*20, z*20));
-        // }
-        // }
-        // Cube oCube = new Cube(200, 400, 0, 60.0);
-        // cubes.add(oCube);
-        Cube nCube = new Cube(400, 400, 0, 60.0);
-        cubes.add(nCube);
+        
 
         AnimationTimer timer = new AnimationTimer() {
             // long prevTime = 0;

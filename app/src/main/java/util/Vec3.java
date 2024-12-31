@@ -29,6 +29,10 @@ public class Vec3 {
     return z;
   }
 
+  public Vec3 negative() {
+    return new Vec3(-x, -y, -z);
+  }
+
   public String toString() {
     return x + ", " + y + ", " + z;
   }
