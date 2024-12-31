@@ -11,6 +11,8 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import util.Vec2;
 import util.Vec3;
 
@@ -36,6 +38,22 @@ public class GameApp extends Application {
         stage.setScene(new Scene(new StackPane(canvas)));
         GraphicsContext g = canvas.getGraphicsContext2D();
 
+        Vec2 lastPos = new Vec2();
+
+        canvas.setOnMousePressed(event -> {
+            if (event.getButton() == MouseButton.SECONDARY) {
+                lastPos.set(event.getSceneX(), event.getSceneY());
+            }
+        });
+
+        canvas.setOnMouseDragged(event -> {
+            
+        });
+
+        canvas.setOnMouseReleased(event -> {
+
+        });
+
         ArrayList<Cube> cubes = new ArrayList<>();
         // for (int x = 0; x < 800/20; x++) {
         // for (int y = 0; y < 800/20; y++) {
@@ -46,15 +64,17 @@ public class GameApp extends Application {
         // Cube oCube = new Cube(200, 400, 0, 60.0);
         // cubes.add(oCube);
         Cube nCube = new Cube(400, 400, 0, 60.0);
-        cubes.add(nCube.rotate(Math.PI / 4, new Vec3(1, 1, 0)));
+        cubes.add(nCube);
 
         AnimationTimer timer = new AnimationTimer() {
-            long prevTime = 0;
+            // long prevTime = 0;
 
             public void handle(long t) {
 
                 g.setFill(Color.WHITE);
                 g.fillRect(0, 0, 800, 800);
+
+
 
                 for (Cube c : cubes) {
                     c.display(g);
