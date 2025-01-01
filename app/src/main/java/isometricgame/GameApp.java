@@ -43,10 +43,31 @@ public class GameApp extends Application {
         // cubes.add(new Cube(x*20, y*20, z*20));
         // }
         // }
-        // Cube oCube = new Cube(200, 400, 0, 60.0);
+        // Cube oCube = new Cube(400, 400, 0, 60.0);
         // cubes.add(oCube);
         Cube nCube = new Cube(400, 400, 0, 60.0);
         cubes.add(nCube.rotate(Math.PI / 4, new Vec3(1, 1, 0)));
+        // Cube n2Cube = new Cube(300, 300, 0, 60.0);
+        // cubes.add(n2Cube.rotate(Math.PI / 4, new Vec3(1, 1, 0)));
+        // Cube n3Cube = new Cube(300, 300, 60, 60.0);
+        // cubes.add(n3Cube.rotate(Math.PI / 4, new Vec3(1, 1, 0)));
+
+        Vec3 axis = new Vec3(0.5,1,0);
+        axis.normalize();
+
+        // for (int x = 0; x < 800/20; x++) {
+        //     for (int y = 0; y < 800/20; y++) {
+        //         for (int z = 0; z < 800/20; z++) {
+        //             cubes.add((new Cube(x*60, y*60, z*60, 60)).rotate(Math.PI/4, new Vec3(0, 1, 0)).rotate(Math.sqrt(2)/2, new Vec3(1, 0, 0)));
+        //         }
+        //     }
+        // }
+
+        // for (int x = 0; x < 800/20; x++) {
+        //     for (int z = 0; z < 800/20; z++) {
+        //         cubes.add((new Cube(x*60, 400, z*60, 60)).rotate(Math.PI/4, new Vec3(0, 1, 0)).rotate(Math.sqrt(2)/2, new Vec3(1, 0, 0)));
+        //     }
+        // }
 
         AnimationTimer timer = new AnimationTimer() {
             long prevTime = 0;

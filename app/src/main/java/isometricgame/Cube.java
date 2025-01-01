@@ -19,11 +19,13 @@ public class Cube {
     * <li>7 - front bottom left
     * </ul>
     */
-    private Vec3[] endpoints3d = new Vec3[8];
+    private Vec3[] endpoints3d;
 
     private double size;
 
-    private Face face1, face2, face3, face4, face5, face6;
+// IDEA - create a program that allows for 3d modelling and outputs things with 6 sides to be used as a cube, however it also assigns a depth value to each pixel in order to properyl display this
+
+    private Face[] faces = new Face[6];
     /**
      * Creates a cube from its center point assuming all edges of the cube are aligned with their respective axis.
      * @param xCenter
@@ -36,50 +38,51 @@ public class Cube {
         // Vec3 center = new Vec3(xCenter, yCenter, zCenter);
         // Vec3 ulCorner = center.add(-halfSize, -halfSize,-halfSize);
         this.size = size;
-        
-        endpoints3d[0] = new Vec3(xCenter - size/2, yCenter - size/2, zCenter - size/2); //back top left
-        endpoints3d[1] = new Vec3(xCenter + size/2, yCenter - size/2, zCenter - size/2); //top right
-        endpoints3d[2] = new Vec3(xCenter + size/2, yCenter + size/2, zCenter - size/2); //bottom right
-        endpoints3d[3] = new Vec3(xCenter - size/2, yCenter + size/2, zCenter - size/2); //bottom left}
-        endpoints3d[4] = new Vec3(xCenter - size/2, yCenter - size/2, zCenter + size/2); //front {top left
-        endpoints3d[5] = new Vec3(xCenter + size/2, yCenter - size/2, zCenter + size/2); //top right
-        endpoints3d[6] = new Vec3(xCenter + size/2, yCenter + size/2, zCenter + size/2); //bottom right
-        endpoints3d[7] = new Vec3(xCenter - size/2, yCenter + size/2, zCenter + size/2); //bottom left}
 
+        endpoints3d = new Vec3[]{
+        
+        new Vec3(xCenter - size/2, yCenter - size/2, zCenter - size/2), //back top left
+        new Vec3(xCenter + size/2, yCenter - size/2, zCenter - size/2), //top right
+        new Vec3(xCenter + size/2, yCenter + size/2, zCenter - size/2), //bottom right
+        new Vec3(xCenter - size/2, yCenter + size/2, zCenter - size/2), //bottom left}
+        new Vec3(xCenter - size/2, yCenter - size/2, zCenter + size/2), //front {top left
+        new Vec3(xCenter + size/2, yCenter - size/2, zCenter + size/2), //top right
+        new Vec3(xCenter + size/2, yCenter + size/2, zCenter + size/2), //bottom right
+        new Vec3(xCenter - size/2, yCenter + size/2, zCenter + size/2) //bottom left}
+
+        };
 
         convertEndpoints();
 
     }
 
     public void convertEndpoints() {
-        double[] face1XPoints = {endpoints3d[0].getX(), endpoints3d[1].getX(), endpoints3d[2].getX(), endpoints3d[3].getX()};
-        double[] face2XPoints = {endpoints3d[0].getX(), endpoints3d[3].getX(), endpoints3d[7].getX(), endpoints3d[4].getX()};
-        double[] face3XPoints = {endpoints3d[4].getX(), endpoints3d[5].getX(), endpoints3d[6].getX(), endpoints3d[7].getX()};
-        double[] face4XPoints = {endpoints3d[1].getX(), endpoints3d[2].getX(), endpoints3d[6].getX(), endpoints3d[5].getX()};
-        double[] face5XPoints = {endpoints3d[1].getX(), endpoints3d[0].getX(), endpoints3d[4].getX(), endpoints3d[5].getX()};
-        double[] face6XPoints = {endpoints3d[2].getX(), endpoints3d[3].getX(), endpoints3d[7].getX(), endpoints3d[6].getX()};
+        int[][] faceIndices = {
+            {0, 1, 2, 3},
+            {0, 3, 7, 4},
+            {4, 5, 6, 7},
+            {1, 2, 6, 5},
+            {0, 1, 5, 4},
+            {2, 3, 7, 6}
+        };
 
-        double[] face1YPoints = {endpoints3d[0].getY(), endpoints3d[1].getY(), endpoints3d[2].getY(), endpoints3d[3].getY()};
-        double[] face2YPoints = {endpoints3d[0].getY(), endpoints3d[3].getY(), endpoints3d[7].getY(), endpoints3d[4].getY()};
-        double[] face3YPoints = {endpoints3d[4].getY(), endpoints3d[5].getY(), endpoints3d[6].getY(), endpoints3d[7].getY()};
-        double[] face4YPoints = {endpoints3d[1].getY(), endpoints3d[2].getY(), endpoints3d[6].getY(), endpoints3d[5].getY()};
-        double[] face5YPoints = {endpoints3d[1].getY(), endpoints3d[0].getY(), endpoints3d[4].getY(), endpoints3d[5].getY()};
-        double[] face6YPoints = {endpoints3d[2].getY(), endpoints3d[3].getY(), endpoints3d[7].getY(), endpoints3d[6].getY()};
-
-        face1 = new Face(face1XPoints, face1YPoints);
-        face2 = new Face(face2XPoints, face2YPoints);
-        face3 = new Face(face3XPoints, face3YPoints);
-        face4 = new Face(face4XPoints, face4YPoints);
-        face5 = new Face(face5XPoints, face5YPoints);
-        face6 = new Face(face6XPoints, face6YPoints);
+        for (int i = 0; i < faceIndices.length; i++) {
+            double[] xPoints = new double[4];
+            double[] yPoints = new double[4];
+            for (int j = 0; j < faceIndices[i].length; j++) {
+                xPoints[j] = endpoints3d[faceIndices[i][j]].getX();
+                yPoints[j] = endpoints3d[faceIndices[i][j]].getY();
+            }
+            faces[i] = new Face(xPoints, yPoints);
+        }
     }
 
     public Cube rotate(double theta, Vec3 axis) {
         Cube rCube = new Cube(0, 0, 0, size);
         for (int i = 0; i < endpoints3d.length; i++) {
             rCube.endpoints3d[i] = endpoints3d[i].rotate(theta, axis);
-            System.out.println(rCube.endpoints3d[i]);
-            System.out.println(endpoints3d[i].rotate(theta, axis));
+            // System.out.println(rCube.endpoints3d[i]);
+            // System.out.println(endpoints3d[i].rotate(theta, axis));
         }
         rCube.convertEndpoints();
         return rCube;
@@ -91,12 +94,12 @@ public class Cube {
     }
 
     public void drawFaces(GraphicsContext g) {
-        g.strokePolygon(face1.xPoints, face1.yPoints, 4);
-        g.strokePolygon(face2.xPoints, face2.yPoints, 4);
-        g.strokePolygon(face3.xPoints, face3.yPoints, 4);
-        g.strokePolygon(face4.xPoints, face4.yPoints, 4);
-        g.strokePolygon(face5.xPoints, face5.yPoints, 4);
-        g.strokePolygon(face6.xPoints, face6.yPoints, 4);
+        // g.strokePolygon(faces[5].xPoints, faces[5].yPoints, 4);
+
+        //or
+        for (Face face : faces) {
+            g.strokePolygon(face.xPoints, face.yPoints, 4);
+        }
     }
 
     public void display(GraphicsContext g) {
