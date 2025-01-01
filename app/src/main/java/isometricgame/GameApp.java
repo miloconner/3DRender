@@ -60,15 +60,11 @@ public class GameApp extends Application {
                 for (Cube cube : cubes) {
                     cube.rotateThis(deltaPos.getX() / 800.0, new Vec3(0, 1, 0));
                     cube.rotateThis(deltaPos.getY() / 800.0, new Vec3(1, 0, 0));
+                    cube.project2D(30);
+                    // System.out.println(cube);
                 }
             }
         });
-
-        canvas.setOnMouseReleased(event -> {
-
-        });
-
-        
 
         AnimationTimer timer = new AnimationTimer() {
             // long prevTime = 0;
@@ -82,6 +78,7 @@ public class GameApp extends Application {
 
                 for (Cube c : cubes) {
                     c.display(g);
+                    c.project2D(30);
                 }
 
                 // Vec2 testVec = new Vec2(18*20, 20*20);

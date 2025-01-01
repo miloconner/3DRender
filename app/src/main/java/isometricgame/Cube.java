@@ -85,6 +85,13 @@ public class Cube {
         return rotCube;
     }
 
+    public void project2D(double near) {
+        for (int i = 0; i < endpoints3d.length; i++) {
+            endpoints3d[i] = endpoints3d[i].projectVec2(near);
+        }
+        this.convertEndpoints();
+    }
+
     public void rotateThis(double theta, Vec3 axis) {
         for (int i = 0; i < endpoints3d.length; i++) {
             endpoints3d[i] = endpoints3d[i].rotate(theta, axis);

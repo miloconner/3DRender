@@ -95,4 +95,11 @@ public class Vec3 {
 
     return new Vec3(rX, rY, rZ);
   }
+
+  public Vec3 projectVec2(double near) {
+    double nY = (near * y) / -z;
+    double nX = (near * x) / -z;
+
+    return new Vec3(nX, nY, 0);
+  }
 }
