@@ -29,6 +29,10 @@ public class Vec3 {
     return z;
   }
 
+  public Vec3 negative() {
+    return new Vec3(-x, -y, -z);
+  }
+
   public String toString() {
     return x + ", " + y + ", " + z;
   }
@@ -90,5 +94,12 @@ public class Vec3 {
     double rZ = tW * qZI + tZ * qW + tX * qYI - tY * qXI;
 
     return new Vec3(rX, rY, rZ);
+  }
+
+  public Vec3 projectVec2(double near) {
+    double nY = (near * y) / -z;
+    double nX = (near * x) / -z;
+
+    return new Vec3(nX, nY, 0);
   }
 }

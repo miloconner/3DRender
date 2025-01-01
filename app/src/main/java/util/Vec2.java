@@ -24,6 +24,10 @@ public class Vec2 {
     return this.y;
   }
 
+  public Vec2 negative() {
+    return new Vec2(-x, -y);
+  }
+
   public String toString() {
     return this.x + ", " + this.y;
   }

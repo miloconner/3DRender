@@ -78,14 +78,28 @@ public class Cube {
     }
 
     public Cube rotate(double theta, Vec3 axis) {
-        Cube rCube = new Cube(0, 0, 0, size);
+        Cube rotCube = new Cube(0, 0, 0, size);
         for (int i = 0; i < endpoints3d.length; i++) {
-            rCube.endpoints3d[i] = endpoints3d[i].rotate(theta, axis);
-            // System.out.println(rCube.endpoints3d[i]);
-            // System.out.println(endpoints3d[i].rotate(theta, axis));
+            rotCube.endpoints3d[i] = endpoints3d[i].rotate(theta, axis);
+            System.out.println(rotCube.endpoints3d[i]);
+            System.out.println(endpoints3d[i].rotate(theta, axis));
         }
-        rCube.convertEndpoints();
-        return rCube;
+        rotCube.convertEndpoints();
+        return rotCube;
+    }
+
+    public void project2D(double near) {
+        for (int i = 0; i < endpoints3d.length; i++) {
+            endpoints3d[i] = endpoints3d[i].projectVec2(near);
+        }
+        this.convertEndpoints();
+    }
+
+    public void rotateThis(double theta, Vec3 axis) {
+        for (int i = 0; i < endpoints3d.length; i++) {
+            endpoints3d[i] = endpoints3d[i].rotate(theta, axis);
+        }
+        this.convertEndpoints();
     }
 
     public static Cube newOrthogonalCube(double xCenter, double yCenter, double zCenter) {
