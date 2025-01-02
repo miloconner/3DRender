@@ -1,5 +1,6 @@
 package isometricgame;
 
+import util.Vec2;
 import util.Vec3;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -19,7 +20,8 @@ public class Cube {
     * <li>7 - front bottom left
     * </ul>
     */
-    private Vec3[] endpoints3d;
+    private Vec3[] conEndpoints;
+    private Vec2[] visEndpoints = new Vec2[8];
 
     private Vec3 pos;
 
@@ -43,7 +45,7 @@ public class Cube {
 
         this.pos = new Vec3(xCenter, yCenter, zCenter);
 
-        endpoints3d = new Vec3[]{
+        conEndpoints = new Vec3[]{
         
         new Vec3(xCenter - size/2, yCenter - size/2, zCenter - size/2), //back top left
         new Vec3(xCenter + size/2, yCenter - size/2, zCenter - size/2), //top right
@@ -56,7 +58,7 @@ public class Cube {
 
         };
 
-        convertEndpoints();
+        // convertEndpoints();
 
     }
 
@@ -78,44 +80,20 @@ public class Cube {
             double[] xPoints = new double[4];
             double[] yPoints = new double[4];
             for (int j = 0; j < faceIndices[i].length; j++) {
-                xPoints[j] = endpoints3d[faceIndices[i][j]].getX();
-                yPoints[j] = endpoints3d[faceIndices[i][j]].getY();
+                xPoints[j] = visEndpoints[faceIndices[i][j]].getX();
+                yPoints[j] = visEndpoints[faceIndices[i][j]].getY();
             }
             faces[i] = new Face(xPoints, yPoints);
         }
     }
-
-    public Cube rotate(double theta, Vec3 axis, Vec3 origin) {
-        Cube rotCube = new Cube(pos.getX(), pos.getY(), pos.getZ(), size);
-        for (int i = 0; i < endpoints3d.length; i++) {
-            rotCube.endpoints3d[i] = endpoints3d[i].rotate(theta, axis, origin);
-            rotCube.pos = rotCube.pos.rotate(theta, axis, origin);
-        }
-        rotCube.convertEndpoints();
-        return rotCube;
-    }
-
-    public void project2D(double near, double fov, Vec3 camPos) {
-        for (int i = 0; i < endpoints3d.length; i++) {
-            endpoints3d[i] = endpoints3d[i].projectVec2(near, fov, camPos);
-        }
-        this.convertEndpoints();
-    }
-
-    public void rotateThis(double theta, Vec3 axis, Vec3 origin) {
-        for (int i = 0; i < endpoints3d.length; i++) {
-            endpoints3d[i] = endpoints3d[i].rotate(theta, axis, origin);
-            pos = pos.rotate(theta, axis, origin);
-        }
-        this.convertEndpoints();
-    }
-
+    
     public static Cube newOrthogonalCube(double xCenter, double yCenter, double zCenter) {
         Cube c = new Cube(xCenter, yCenter, zCenter, 60.0);
         return c;
     }
 
     public void drawFaces(GraphicsContext g) {
+        g.setStroke(Color.BLACK);
         g.setFill(Color.RED);
         g.fillPolygon(faces[5].xPoints, faces[5].yPoints, 4);
 
@@ -127,16 +105,20 @@ public class Cube {
 
     public Cube clone() {
         Cube ret = new Cube(pos.getX(), pos.getY(), pos.getZ(), size);
-        for (int i = 0; i < endpoints3d.length; i++) {
-            ret.endpoints3d[i] = endpoints3d[i];
+        for (int i = 0; i < conEndpoints.length; i++) {
+            ret.conEndpoints[i] = conEndpoints[i];
         }
         return ret;
     }
 
-    public void display(GraphicsContext g) {
+    public void display(GraphicsContext g, Camera cam, double near, double fov) {
         //create endpoints and then isotransform them
         // g.setFill(Color.BLACK);
-        g.setStroke(Color.BLACK);
+
+        for (int i = 0; i < conEndpoints.length; i++) {
+            visEndpoints[i] = cam.project(conEndpoints[i], near, fov);
+        }
+        convertEndpoints();
         drawFaces(g);
     }
 }

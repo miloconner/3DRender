@@ -55,6 +55,22 @@ public class Vec3 {
     z += other.z;
   }
 
+  public double dot(Vec3 other) {
+    return (x * other.x) + (y * other.y) + (z * other.z);
+  }
+
+  public Vec3 cross(Vec3 other) {
+    Vec3 ret = new Vec3();
+    ret.x = y * other.z - z * other.y;
+    ret.y = -x * other.z + z * other.x;
+    ret.z = x * other.y - y * other.x;
+    return ret;
+  }
+
+  public Vec3 mult(double scalar) {
+    return new Vec3(x*scalar, y*scalar, z*scalar);
+  }
+
   public Vec2 projVec2(double theta, double cX, double cY, double oX, double oY, double oZ) {
     double nX = ((x - oX) * Math.cos(theta) - (z - oZ) * Math.sin(theta)) * cX;
     double nY = ((y - oY) + (x - oX) * Math.sin(theta) + (z - oZ) * Math.cos(theta)) * cY;
@@ -75,30 +91,20 @@ public class Vec3 {
     Vec3 u = axis.clone();
     u.normalize();
 
-    double qW = Math.cos(theta/2);
-    double qX = u.getX() * Math.sin(theta/2);
-    double qY = u.getY() * Math.sin(theta/2);
-    double qZ = u.getZ() * Math.sin(theta/2);
+    Quat q = Quat.rotQuat(theta, axis);
 
-    double qXI = -qX;
-    double qYI = -qY;
-    double qZI = -qZ;
+    Quat qI = q.inverse();
 
     // q*v
-    double tW = -qX * x - qY * y - qZ * z;
-    double tX = qW * x + qY * z - qZ * y;
-    double tY = qW * y + qZ * x - qX * z;
-    double tZ = qW * z + qX * y - qY * x;
+    Quat quatVec = q.multiply(this);
 
     // q*v * q^-1
-    double rX = tW * qXI + tX * qW + tY * qZI - tZ * qYI;
-    double rY = tW * qYI + tY * qW + tZ * qXI - tX * qZI;
-    double rZ = tW * qZI + tZ * qW + tX * qYI - tY * qXI;
+    quatVec.multiplyThis(qI);
 
-    return new Vec3(rX, rY, rZ).add(origin);
+    return quatVec.getVec().add(origin);
   }
 
-  public Vec3 projectVec2(double near, double fov, Vec3 camPos) {
+  public Vec2 projectVec2(double near, double fov, Vec3 camPos) {
     Vec3 rel = this.add(camPos.negative());
     double scale = near * Math.tan(fov / 2);
 
@@ -109,6 +115,6 @@ public class Vec3 {
 
     ret.addThis(camPos);
 
-    return ret;
+    return new Vec2(ret.getX(), ret.getY());
   }
 }
