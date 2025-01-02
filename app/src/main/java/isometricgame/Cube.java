@@ -21,6 +21,8 @@ public class Cube {
     */
     private Vec3[] endpoints3d;
 
+    private Vec3 pos;
+
     private double size;
 
 // IDEA - create a program that allows for 3d modelling and outputs things with 6 sides to be used as a cube, however it also assigns a depth value to each pixel in order to properyl display this
@@ -39,6 +41,8 @@ public class Cube {
         // Vec3 ulCorner = center.add(-halfSize, -halfSize,-halfSize);
         this.size = size;
 
+        this.pos = new Vec3(xCenter, yCenter, zCenter);
+
         endpoints3d = new Vec3[]{
         
         new Vec3(xCenter - size/2, yCenter - size/2, zCenter - size/2), //back top left
@@ -54,6 +58,10 @@ public class Cube {
 
         convertEndpoints();
 
+    }
+
+    public Vec3 getPos() {
+        return pos;
     }
 
     public void convertEndpoints() {
@@ -77,27 +85,27 @@ public class Cube {
         }
     }
 
-    public Cube rotate(double theta, Vec3 axis) {
-        Cube rotCube = new Cube(0, 0, 0, size);
+    public Cube rotate(double theta, Vec3 axis, Vec3 origin) {
+        Cube rotCube = new Cube(pos.getX(), pos.getY(), pos.getZ(), size);
         for (int i = 0; i < endpoints3d.length; i++) {
-            rotCube.endpoints3d[i] = endpoints3d[i].rotate(theta, axis);
-            System.out.println(rotCube.endpoints3d[i]);
-            System.out.println(endpoints3d[i].rotate(theta, axis));
+            rotCube.endpoints3d[i] = endpoints3d[i].rotate(theta, axis, origin);
+            rotCube.pos = rotCube.pos.rotate(theta, axis, origin);
         }
         rotCube.convertEndpoints();
         return rotCube;
     }
 
-    public void project2D(double near) {
+    public void project2D(double near, double fov, Vec3 camPos) {
         for (int i = 0; i < endpoints3d.length; i++) {
-            endpoints3d[i] = endpoints3d[i].projectVec2(near);
+            endpoints3d[i] = endpoints3d[i].projectVec2(near, fov, camPos);
         }
         this.convertEndpoints();
     }
 
-    public void rotateThis(double theta, Vec3 axis) {
+    public void rotateThis(double theta, Vec3 axis, Vec3 origin) {
         for (int i = 0; i < endpoints3d.length; i++) {
-            endpoints3d[i] = endpoints3d[i].rotate(theta, axis);
+            endpoints3d[i] = endpoints3d[i].rotate(theta, axis, origin);
+            pos = pos.rotate(theta, axis, origin);
         }
         this.convertEndpoints();
     }
@@ -108,12 +116,21 @@ public class Cube {
     }
 
     public void drawFaces(GraphicsContext g) {
-        // g.strokePolygon(faces[5].xPoints, faces[5].yPoints, 4);
+        g.setFill(Color.RED);
+        g.fillPolygon(faces[5].xPoints, faces[5].yPoints, 4);
 
         //or
         for (Face face : faces) {
             g.strokePolygon(face.xPoints, face.yPoints, 4);
         }
+    }
+
+    public Cube clone() {
+        Cube ret = new Cube(pos.getX(), pos.getY(), pos.getZ(), size);
+        for (int i = 0; i < endpoints3d.length; i++) {
+            ret.endpoints3d[i] = endpoints3d[i];
+        }
+        return ret;
     }
 
     public void display(GraphicsContext g) {

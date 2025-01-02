@@ -69,7 +69,9 @@ public class Vec3 {
     z = z/norm;
   }
 
-  public Vec3 rotate(double theta, Vec3 axis) {
+  public Vec3 rotate(double theta, Vec3 axis, Vec3 origin) {
+    this.addThis(origin.negative());
+
     Vec3 u = axis.clone();
     u.normalize();
 
@@ -93,13 +95,20 @@ public class Vec3 {
     double rY = tW * qYI + tY * qW + tZ * qXI - tX * qZI;
     double rZ = tW * qZI + tZ * qW + tX * qYI - tY * qXI;
 
-    return new Vec3(rX, rY, rZ);
+    return new Vec3(rX, rY, rZ).add(origin);
   }
 
-  public Vec3 projectVec2(double near) {
-    double nY = (near * y) / -z;
-    double nX = (near * x) / -z;
+  public Vec3 projectVec2(double near, double fov, Vec3 camPos) {
+    Vec3 rel = this.add(camPos.negative());
+    double scale = near * Math.tan(fov / 2);
 
-    return new Vec3(nX, nY, 0);
+    double nY = -(scale * rel.getY()) / -rel.getZ(); //flipped coordinate system
+    double nX = (scale * rel.getX()) / -rel.getZ();
+
+    Vec3 ret = new Vec3(nX, nY, 0);
+
+    ret.addThis(camPos);
+
+    return ret;
   }
 }
