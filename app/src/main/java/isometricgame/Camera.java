@@ -21,7 +21,7 @@ public class Camera {
     public void rotate(double theta, Vec3 axis, Vec3 origin) {
         System.out.println(theta);
         axis.normalize();
-        //pos.rotate(theta, axis, origin);
+        pos.rotate(theta, axis, origin);
         rot.multiplyThis(Quat.rotQuat(theta, axis));
         System.out.println(pos +", "+ rot);
     }
