@@ -86,7 +86,7 @@ public class Cube {
             faces[i] = new Face(xPoints, yPoints);
         }
     }
-    
+
     public static Cube newOrthogonalCube(double xCenter, double yCenter, double zCenter) {
         Cube c = new Cube(xCenter, yCenter, zCenter, 60.0);
         return c;
@@ -96,6 +96,7 @@ public class Cube {
         g.setStroke(Color.BLACK);
         g.setFill(Color.RED);
         g.fillPolygon(faces[5].xPoints, faces[5].yPoints, 4);
+        g.fillPolygon(faces[3].xPoints, faces[3].yPoints, 4);
 
         //or
         for (Face face : faces) {
@@ -119,6 +120,10 @@ public class Cube {
             visEndpoints[i] = cam.project(conEndpoints[i], near, fov);
         }
         convertEndpoints();
+        g.setFill(Color.BLUE);
+        for (Vec3 endpoint : conEndpoints) {
+            g.fillOval(endpoint.getX(), endpoint.getY(), 5, 5); // Just for debugging
+        }
         drawFaces(g);
     }
 }

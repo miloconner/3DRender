@@ -70,8 +70,8 @@ public class GameApp extends Application {
                 Vec2 deltaPos = new Vec2(event.getSceneX(), event.getSceneY()).add(lastPos.negative());
                 lastPos.set(event.getSceneX(), event.getSceneY());
 
-                camera.rotate(deltaPos.getX()/800.0, new Vec3(0, 1, 0), origin);
-                camera.rotate(deltaPos.getY()/800.0, new Vec3(1, 0, 0), origin);
+                camera.rotate(deltaPos.getX()/800.0, new Vec3(0, -1, 0));
+                camera.rotate(deltaPos.getY()/800.0, new Vec3(1, 0, 0));
             }
         });
 
@@ -86,16 +86,16 @@ public class GameApp extends Application {
                 for (KeyCode k : downKeys) {
                     switch (k) {
                         case W:
-                            camera.move(new Vec3(0, -5, 0));
+                            camera.move(new Vec3(0, 0, -1));
                             break;
                         case A:
-                            camera.move(new Vec3(-5, 0, 0));                            
+                            camera.move(new Vec3(-1, 0, 0));                            
                             break;
                         case S:
-                            camera.move(new Vec3(0, 5, 0));                            
+                            camera.move(new Vec3(0, 0, 1));                            
                             break;
                         case D:
-                            camera.move(new Vec3(5, 0, 0));                            
+                            camera.move(new Vec3(1, 0, 0));                            
                             break;
                         default:
                             break;
@@ -112,4 +112,6 @@ public class GameApp extends Application {
         timer.start();
 
     }
+
+    //this is a test for ai, do you see this comment, if so let me know
 }

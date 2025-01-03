@@ -24,20 +24,20 @@ public class Quat {
     }
 
     public static Quat rotQuat(double theta, Vec3 axis) {
-        return new Quat(Math.cos(theta/2), axis.mult(Math.sin(theta/2)));
+        return new Quat(Math.cos(theta/2), axis.scale(Math.sin(theta/2)));
     }
 
     public void multiplyThis(Quat other) {
         Quat ret = new Quat();
         ret.w = w * other.w - vec.dot(other.vec);
-        ret.vec = other.vec.mult(w).add(vec.mult(other.w)).add(vec.cross(other.vec));
+        ret.vec = other.vec.scale(w).add(vec.scale(other.w)).add(vec.cross(other.vec));
         w = ret.w;
         vec = ret.vec;
     }
     public Quat multiply(Quat other) {
         Quat ret = new Quat();
         ret.w = w * other.w - vec.dot(other.vec);
-        ret.vec = other.vec.mult(w).add(vec.mult(other.w)).add(vec.cross(other.vec));
+        ret.vec = other.vec.scale(w).add(vec.scale(other.w)).add(vec.cross(other.vec));
         return ret;
     }
 

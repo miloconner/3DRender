@@ -67,7 +67,7 @@ public class Vec3 {
     return ret;
   }
 
-  public Vec3 mult(double scalar) {
+  public Vec3 scale(double scalar) {
     return new Vec3(x*scalar, y*scalar, z*scalar);
   }
 
@@ -85,24 +85,24 @@ public class Vec3 {
     z = z/norm;
   }
 
-  public Vec3 rotate(double theta, Vec3 axis, Vec3 origin) {
-    this.addThis(origin.negative());
+  // public Vec3 rotate(double theta, Vec3 axis, Vec3 origin) {
+  //   this.addThis(origin.negative());
 
-    Vec3 u = axis.clone();
-    u.normalize();
+  //   Vec3 u = axis.clone();
+  //   u.normalize();
 
-    Quat q = Quat.rotQuat(theta, axis);
+  //   Quat q = Quat.rotQuat(theta, axis);
 
-    Quat qI = q.inverse();
+  //   Quat qI = q.inverse();
 
-    // q*v
-    Quat quatVec = q.multiply(this);
+  //   // q*v
+  //   Quat quatVec = q.multiply(this);
 
-    // q*v * q^-1
-    quatVec.multiplyThis(qI);
+  //   // q*v * q^-1
+  //   quatVec.multiplyThis(qI);
 
-    return quatVec.getVec().add(origin);
-  }
+  //   return quatVec.getVec().add(origin);
+  // }
 
   public Vec2 projectVec2(double near, double fov, Vec3 camPos) {
     Vec3 rel = this.add(camPos.negative());
