@@ -113,5 +113,5 @@ public class GameApp extends Application {
 
     }
 
-    //this is a test for ai, do you see this comment, if so let me know
+
 }
