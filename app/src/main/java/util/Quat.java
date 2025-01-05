@@ -51,7 +51,7 @@ public class Quat {
     public Vec3 getVec() { return vec; }
     public double getW() { return w; }
 
-    public Quat inverse() {
+    public Quat conjugate() {
         return new Quat(w, -vec.getX(), -vec.getY(), -vec.getZ());
     }
 }

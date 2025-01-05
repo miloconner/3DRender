@@ -35,7 +35,7 @@ public class Camera {
 
     public Vec3 transform(Vec3 vec) {
         Vec3 relVec = vec.add(pos.negative()); // translate point to camera
-        Quat transformed = rot.multiply(relVec).multiply(rot.inverse());
+        Quat transformed = rot.multiply(relVec).multiply(rot.conjugate());
         return transformed.getVec();
     }
 
@@ -51,14 +51,14 @@ public class Camera {
         dir.normalize();
         // Vec3 speedDir = dir.scale(5);
 
-        Quat rotatedDir = rot.multiply(dir).multiply(rot.inverse());
+        Quat rotatedDir = rot.multiply(dir).multiply(rot.conjugate());
 
         pos.addThis(rotatedDir.getVec().scale(5));
     }
 
     public void distInDirection(Vec3 dir, double val) {
         dir.normalize();
-        Quat rotatedDir = rot.multiply(dir).multiply(rot.inverse());
+        Quat rotatedDir = rot.multiply(dir).multiply(rot.conjugate());
         System.out.println(rotatedDir);
         rotatedDir.getVec().normalize();
         System.out.println(rotatedDir);

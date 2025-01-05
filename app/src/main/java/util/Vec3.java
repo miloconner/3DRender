@@ -71,11 +71,11 @@ public class Vec3 {
     return new Vec3(x*scalar, y*scalar, z*scalar);
   }
 
-  public Vec2 projVec2(double theta, double cX, double cY, double oX, double oY, double oZ) {
-    double nX = ((x - oX) * Math.cos(theta) - (z - oZ) * Math.sin(theta)) * cX;
-    double nY = ((y - oY) + (x - oX) * Math.sin(theta) + (z - oZ) * Math.cos(theta)) * cY;
-    return new Vec2(nX + oX, nY + oY + oZ);
-  }
+  // public Vec2 projVec2(double theta, double cX, double cY, double oX, double oY, double oZ) {
+  //   double nX = ((x - oX) * Math.cos(theta) - (z - oZ) * Math.sin(theta)) * cX;
+  //   double nY = ((y - oY) + (x - oX) * Math.sin(theta) + (z - oZ) * Math.cos(theta)) * cY;
+  //   return new Vec2(nX + oX, nY + oY + oZ);
+  // }
 
   public void normalize() {
     double norm = Math.sqrt(x*x + y*y + z*z);
@@ -85,17 +85,17 @@ public class Vec3 {
     z = z/norm;
   }
 
-  public Vec2 projectVec2(double near, double fov, Vec3 camPos) {
-    Vec3 rel = this.add(camPos.negative());
-    double scale = near * Math.tan(fov / 2);
+  // public Vec2 projectVec2(double near, double fov, Vec3 camPos) {
+  //   Vec3 rel = this.add(camPos.negative());
+  //   double scale = near * Math.tan(fov / 2);
 
-    double nY = -(scale * rel.getY()) / -rel.getZ(); //flipped coordinate system
-    double nX = (scale * rel.getX()) / -rel.getZ();
+  //   double nY = -(scale * rel.getY()) / -rel.getZ(); //flipped coordinate system
+  //   double nX = (scale * rel.getX()) / -rel.getZ();
 
-    Vec3 ret = new Vec3(nX, nY, 0);
+  //   Vec3 ret = new Vec3(nX, nY, 0);
 
-    ret.addThis(camPos);
+  //   ret.addThis(camPos);
 
-    return new Vec2(ret.getX(), ret.getY());
-  }
+  //   return new Vec2(ret.getX(), ret.getY());
+  // }
 }
