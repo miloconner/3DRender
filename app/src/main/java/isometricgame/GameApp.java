@@ -86,13 +86,13 @@ public class GameApp extends Application {
                 for (KeyCode k : downKeys) {
                     switch (k) {
                         case W:
-                            camera.move(new Vec3(0, 0, -1));
+                            camera.move(new Vec3(0, 0, 1));
                             break;
                         case A:
                             camera.move(new Vec3(-1, 0, 0));                            
                             break;
                         case S:
-                            camera.move(new Vec3(0, 0, 1));                            
+                            camera.move(new Vec3(0, 0, -1));                            
                             break;
                         case D:
                             camera.move(new Vec3(1, 0, 0));                            

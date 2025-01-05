@@ -35,7 +35,7 @@ public class Camera {
 
     public Vec3 transform(Vec3 vec) {
         Vec3 relVec = vec.add(pos.negative()); // translate point to camera
-        Quat transformed = rot.multiply(relVec).multiply(rot.conjugate());
+        Quat transformed = rot.conjugate().multiply(relVec).multiply(rot);
         return transformed.getVec();
     }
 
