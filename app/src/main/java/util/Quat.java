@@ -48,6 +48,17 @@ public class Quat {
         return multiply(new Quat(0, other.getX(), other.getY(), other.getZ()));
     }
 
+    public double norm() {
+        return Math.sqrt(Math.pow(w, 2) + Math.pow(vec.getX(),2) + Math.pow(vec.getY(),2) + Math.pow(vec.getZ(),2));
+    }
+
+    public void normalize() {
+        double n = norm();
+        if (n == 0) { return; }
+        w*=1/n;
+        vec.scaleThis(1/n);
+    }
+
     public Vec3 getVec() { return vec; }
     public double getW() { return w; }
 

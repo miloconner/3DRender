@@ -23,15 +23,8 @@ public class Camera {
     public void rotate(double theta, Vec3 axis) {
         axis.normalize();
         rot.multiplyThis(Quat.rotQuat(theta, axis));
+        rot = new Quat(rot.getW(), rot.getVec().getX(), rot.getVec().getY(), 0); //slight double errors result in a drifting z axis, adding a countermeasure, but math is technically incorrect and wont work if trying to rotate z
     }
-
-    // public void rotate(double theta, Vec3 axis) {
-    //     Vec3 relVec = pos.negative(); // Calculate the vector relative to the camera
-    //     Quat translationQuat = Quat.rotQuat(theta, axis); // Calculate the rotation quaternion
-    //     Quat result = translationQuat.multiply(rot); // Rotate the current rotation
-    //     rot = result;
-    //     pos = result.multiply(relVec).getVec().add(pos); // Update the camera's position after rotation
-    // }
 
     public Vec3 transform(Vec3 vec) {
         Vec3 relVec = vec.add(pos.negative()); // translate point to camera

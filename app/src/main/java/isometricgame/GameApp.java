@@ -70,8 +70,8 @@ public class GameApp extends Application {
                 Vec2 deltaPos = new Vec2(event.getSceneX(), event.getSceneY()).add(lastPos.negative());
                 lastPos.set(event.getSceneX(), event.getSceneY());
 
-                camera.rotate(deltaPos.getX()/800.0, new Vec3(0, -1, 0));
-                camera.rotate(deltaPos.getY()/800.0, new Vec3(1, 0, 0));
+                camera.rotate(deltaPos.getX()/800.0, new Vec3(0, 1, 0));
+                camera.rotate(deltaPos.getY()/800.0, new Vec3(-1, 0, 0));
             }
         });
 
