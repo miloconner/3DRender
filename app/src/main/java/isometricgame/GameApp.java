@@ -14,28 +14,23 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import util.Quat;
 import util.Vec2;
 import util.Vec3;
 
+//things to implement
+//anything behind camera should be hidden, but also preferable for any endpoints behind camera to still have connections so the face doesnt dissappear
+//change it from making 6 faces with reused endpoints to faces that share endpoints and dont create extra
+//or find a way to procedurally use endpoints to make faces instead of manually inputting
+//separate editor that allows creation of new 3d models
+//find a way to make the math of rotations work without double errors so you dont have to set z rot to 0 each time
+//add space for up and shift for down (y axis movement)
+
 public class GameApp extends Application {
 
-    private Image testIm = new Image("file:test.png");
-    
     private Vec3 origin = new Vec3(400, 400, 000);
 
     private Camera camera = new Camera(new Quat(), origin);
-
-    // public static void main(String[] args) {
-    //     Cube oCube = new Cube(200, 400, 0, 60.0);
-    //     Cube nCube = new Cube(400, 400, 0, 60.0);
-    //     Cube rCube = nCube.rotate(Math.PI / 4, new Vec3(1, 0, 0));
-    // }
-
-    // public static void main(String[] args) {
-    //     launch();
-    // }
 
     public void start(Stage stage) {
         stage.setTitle("Isometric");
