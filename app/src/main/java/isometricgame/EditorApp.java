@@ -8,7 +8,6 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -18,15 +17,7 @@ import util.Quat;
 import util.Vec2;
 import util.Vec3;
 
-//things to implement
-//anything behind camera should be hidden, but also preferable for any endpoints behind camera to still have connections so the face doesnt dissappear
-//change it from making 6 faces with reused endpoints to faces that share endpoints and dont create extra
-//or find a way to procedurally use endpoints to make faces instead of manually inputting
-//separate editor that allows creation of new 3d models
-//find a way to make the math of rotations work without double errors so you dont have to set z rot to 0 each time
-//DONEadd space for up and shift for down (y axis movement) 
-
-public class GameApp extends Application {
+public class EditorApp extends Application {
 
     private Vec3 origin = new Vec3(400, 400, 000);
 
@@ -111,9 +102,9 @@ public class GameApp extends Application {
                     }
                 }
 
-                for (Cube c : cubes) {
-                    c.display(g, camera, 100, Math.PI/2, origin);
-                }
+                // for (Cube c : cubes) {
+                //     c.display(g, camera, 100, Math.PI/2, origin);
+                // }
 
             }
         };

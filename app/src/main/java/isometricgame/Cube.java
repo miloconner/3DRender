@@ -112,12 +112,12 @@ public class Cube {
         return ret;
     }
 
-    public void display(GraphicsContext g, Camera cam, double near, double fov) {
+    public void display(GraphicsContext g, Camera cam, double near, double fov, Vec3 origin) {
         //create endpoints and then isotransform them
         // g.setFill(Color.BLACK);
 
         for (int i = 0; i < conEndpoints.length; i++) {
-            visEndpoints[i] = cam.project(conEndpoints[i], near, fov);
+            visEndpoints[i] = cam.project(conEndpoints[i], near, fov, origin);
         }
         convertEndpoints();
         g.setFill(Color.BLUE);

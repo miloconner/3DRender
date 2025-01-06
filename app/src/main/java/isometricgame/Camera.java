@@ -15,7 +15,8 @@ public class Camera {
 
     public Camera(Quat rot, Vec3 pos) {
         this.rot = rot;
-        this.pos = pos;
+        this.pos = new Vec3();
+        this.pos.set(pos.getX(), pos.getY(), pos.getZ());
     }
 
     public Vec3 getPos() { return pos; }
@@ -32,12 +33,12 @@ public class Camera {
         return transformed.getVec();
     }
 
-    public Vec2 project(Vec3 vec, double near, double fov) {
+    public Vec2 project(Vec3 vec, double near, double fov, Vec3 origin) {
         Vec3 transformed = transform(vec);
         double scale = near * Math.tan(fov / 2);
         double x = (scale * transformed.getX()) / transformed.getZ();
         double y = (scale * transformed.getY()) / transformed.getZ(); // flip y-axis
-        return new Vec2(x + 400, y + 400);
+        return new Vec2(x + origin.getX(), y + origin.getY());
     }
 
     public void move(Vec3 dir) {
@@ -52,10 +53,7 @@ public class Camera {
     public void distInDirection(Vec3 dir, double val) {
         dir.normalize();
         Quat rotatedDir = rot.multiply(dir).multiply(rot.conjugate());
-        System.out.println(rotatedDir);
-        rotatedDir.getVec().normalize();
-        System.out.println(rotatedDir);
-        
+        rotatedDir.getVec().normalize();       
     }
 
 }
