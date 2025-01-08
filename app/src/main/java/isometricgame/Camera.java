@@ -20,6 +20,7 @@ public class Camera {
     }
 
     public Vec3 getPos() { return pos; }
+    public Quat getRot() { return rot; }
 
     public void rotate(double theta, Vec3 axis) {
         axis.normalize();
@@ -43,7 +44,6 @@ public class Camera {
 
     public void move(Vec3 dir) {
         dir.normalize();
-        // Vec3 speedDir = dir.scale(5);
 
         Quat rotatedDir = rot.multiply(dir).multiply(rot.conjugate());
 

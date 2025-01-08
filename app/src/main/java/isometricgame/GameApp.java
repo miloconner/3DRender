@@ -2,6 +2,7 @@ package isometricgame;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -32,8 +33,12 @@ public class GameApp extends Application {
 
     private Camera camera = new Camera(new Quat(), origin);
 
+    private ArrayList<Cube> cubes = new ArrayList<>(); 
+    private ArrayList<Face> faces = new ArrayList<>();
+    private HashSet<KeyCode> downKeys = new HashSet<>();
+
     public void start(Stage stage) {
-        stage.setTitle("Scenery");
+        stage.setTitle("Game");
         stage.show();
         // initialize window
         Canvas canvas = new Canvas(800, 800);
@@ -46,14 +51,10 @@ public class GameApp extends Application {
         stage.setScene(new Scene(pane));
         GraphicsContext g = canvas.getGraphicsContext2D();
 
-        ArrayList<Cube> cubes = new ArrayList<>();
-
-        Cube nCube = new Cube(origin.getX() + 1, origin.getY() + 1, origin.getZ() + 100, 60.0);
+        Cube nCube = new Cube(origin.getX() + 1, origin.getY() + 1, origin.getZ() + 100, 60.0, faces);
         cubes.add(nCube);
 
         Vec2 lastPos = new Vec2();
-
-        HashSet<KeyCode> downKeys = new HashSet<>();
 
         canvas.requestFocus();
         canvas.setOnKeyPressed( (e) -> { downKeys.add(e.getCode()); });
@@ -111,15 +112,49 @@ public class GameApp extends Application {
                     }
                 }
 
-                for (Cube c : cubes) {
-                    c.display(g, camera, 100, Math.PI/2, origin);
-                }
+                paintScene(g, 100, 300, Math.PI/2);
+
+                // for (Cube c : cubes) {
+                //     c.display(g, camera, 100, Math.PI/2, origin);
+                // }
 
             }
         };
 
         timer.start();
 
+    }
+
+    public void paintScene(GraphicsContext g, double near, double far, double fov) {
+
+        ArrayList<Face> unpainted = new ArrayList<>();
+        for (int i = 0; i < faces.size(); i++) {
+            unpainted.add(faces.get(i));
+        }
+
+        for (int z = (int)(far + camera.getPos().getZ()); z > (int)(near + camera.getPos().getZ()); z--) {
+            // System.out.println(z)
+            ArrayList<Face> painted = new ArrayList<>();
+            for (Face f : unpainted) {
+                // System.out.println(z + ", " + f);
+                for (Vec3 v : f.getVertices()) {
+                    Vec3 rotated = camera.getRot().conjugate().multiply(v).multiply(camera.getRot()).getVec();
+                    // System.out.println(v);
+                    // System.out.println((int)rotated.getZ() + ", " + z);
+                    if ((int)rotated.getZ() == z) { 
+                        // System.out.println("paitned");
+                        f.display(g, camera, near, fov, origin);
+                        painted.add(f);
+                        break;
+                    }
+                }
+            }
+            unpainted.removeAll(painted);
+        }
+
+        //rotate scene into z coord
+        //loop through vertices nad check if at z
+        //paint unpainted
     }
 
 
