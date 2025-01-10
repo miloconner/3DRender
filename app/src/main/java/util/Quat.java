@@ -1,5 +1,7 @@
 package util;
 
+import javax.management.Query;
+
 public class Quat {
     private double w;
     private Vec3 vec;
@@ -52,11 +54,32 @@ public class Quat {
         return Math.sqrt(Math.pow(w, 2) + Math.pow(vec.getX(),2) + Math.pow(vec.getY(),2) + Math.pow(vec.getZ(),2));
     }
 
+    public Quat transform(Quat q) {
+        return this.multiply(q).multiply(this.conjugate());
+    }
+    
+    public Quat transform(Vec3 v) {
+        return transform(new Quat(0, v));
+    }
+    
+    public Quat untransform(Quat q) {
+        return this.conjugate().multiply(q).multiply(this);
+    }
+    
+    public Quat untransform(Vec3 v) {
+        return untransform(new Quat(0, v));
+    }    
+
     public void normalize() {
         double n = norm();
         if (n == 0) { return; }
         w*=1/n;
         vec.scaleThis(1/n);
+    }
+    public Quat normalized() {
+        double n = norm();
+        //this should never have a quat of length 0 anyways
+        return new Quat(w*1/n, vec.scale(1/n));
     }
 
     public Vec3 getVec() { return vec; }

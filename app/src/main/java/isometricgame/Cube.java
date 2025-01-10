@@ -85,9 +85,9 @@ public class Cube {
         };
 
         for (int i = 0; i < faceIndices.length; i++) {
-            Vec3[] verts = new Vec3[4];
+            ArrayList<Vec3> verts = new ArrayList<>();
             for (int j = 0; j < faceIndices[i].length; j++) {
-                verts[j] = conEndpoints[faceIndices[i][j]];
+                verts.add(conEndpoints[faceIndices[i][j]]);
             }
             faces[i] = new Face(verts, Color.BLACK, new Color(1,0,0,1));
         }
@@ -106,9 +106,9 @@ public class Cube {
         return ret;
     }
 
-    public void display(GraphicsContext g, Camera cam, double near, double fov, Vec3 origin) {
-        for (Face face : faces) {
-            face.display(g, cam, near, fov, origin);
-        }
-    }
+    // public void display(GraphicsContext g, Camera cam, double near, double fov, Vec3 origin) {
+    //     for (Face face : faces) {
+    //         face.display(g, cam, near, fov, origin);
+    //     }
+    // }
 }

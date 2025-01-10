@@ -30,7 +30,7 @@ public class Camera {
 
     public Vec3 transform(Vec3 vec) {
         Vec3 relVec = vec.add(pos.negative()); // translate point to camera
-        Quat transformed = rot.conjugate().multiply(relVec).multiply(rot);
+        Quat transformed = rot.untransform(relVec);
         return transformed.getVec();
     }
 
@@ -43,17 +43,9 @@ public class Camera {
     }
 
     public void move(Vec3 dir) {
-        dir.normalize();
-
-        Quat rotatedDir = rot.multiply(dir).multiply(rot.conjugate());
+        Quat rotatedDir = rot.transform(dir.normalized());
 
         pos.addThis(rotatedDir.getVec().scale(5));
-    }
-
-    public void distInDirection(Vec3 dir, double val) {
-        dir.normalize();
-        Quat rotatedDir = rot.multiply(dir).multiply(rot.conjugate());
-        rotatedDir.getVec().normalize();       
     }
 
 }

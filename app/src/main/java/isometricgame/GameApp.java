@@ -10,6 +10,8 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -112,11 +114,8 @@ public class GameApp extends Application {
                     }
                 }
 
-                paintScene(g, 100, 300, Math.PI/2);
-
-                // for (Cube c : cubes) {
-                //     c.display(g, camera, 100, Math.PI/2, origin);
-                // }
+                // paintScene(g, 100, 500, Math.PI*2/3);
+                depthSortDisplay(g, 100, 500, Math.PI*2/3);
 
             }
         };
@@ -125,6 +124,8 @@ public class GameApp extends Application {
 
     }
 
+    //here i want to add a much more complex but hopefully accurate method using pixels
+
     public void paintScene(GraphicsContext g, double near, double far, double fov) {
 
         ArrayList<Face> unpainted = new ArrayList<>();
@@ -132,17 +133,13 @@ public class GameApp extends Application {
             unpainted.add(faces.get(i));
         }
 
-        for (int z = (int)(far + camera.getPos().getZ()); z > (int)(near + camera.getPos().getZ()); z--) {
-            // System.out.println(z)
+        for (int z = (int)Math.round(far + camera.getRot().untransform(camera.getPos()).getVec().getZ()); z > (int)Math.round(near + camera.getRot().untransform(camera.getPos()).getVec().getZ()); z--) {
             ArrayList<Face> painted = new ArrayList<>();
             for (Face f : unpainted) {
-                // System.out.println(z + ", " + f);
                 for (Vec3 v : f.getVertices()) {
-                    Vec3 rotated = camera.getRot().conjugate().multiply(v).multiply(camera.getRot()).getVec();
-                    // System.out.println(v);
-                    // System.out.println((int)rotated.getZ() + ", " + z);
-                    if ((int)rotated.getZ() == z) { 
-                        // System.out.println("paitned");
+                    Vec3 rotated = camera.getRot().untransform(v).getVec();
+                    if ((int)Math.round(rotated.getZ()) == z) {
+                        System.out.println(rotated.getZ());
                         f.display(g, camera, near, fov, origin);
                         painted.add(f);
                         break;
@@ -151,11 +148,41 @@ public class GameApp extends Application {
             }
             unpainted.removeAll(painted);
         }
-
-        //rotate scene into z coord
-        //loop through vertices nad check if at z
-        //paint unpainted
     }
 
+    public void depthSortDisplay(GraphicsContext g, double near, double far, double fov) {
+        ArrayList<Face> unpainted = new ArrayList<>(faces);
+        
+        unpainted.sort((face1, face2) -> 
+            Double.compare(averageDepth(face2), averageDepth(face1))
+        );
+
+        for (Face f : unpainted) {
+            // System.out.println(averageDepth(f));
+            // f.setRed((int)averageDepth(f)*255/400);
+            f.display(g, camera, near, fov, origin);
+        }
+    }
+
+    //doesnt work since corners overlap
+    public double minimumDepth(Face f) {
+        double min = Double.MAX_VALUE;
+        for (Vec3 v : f.getVertices()) {
+            double d = camera.getRot().untransform(v.add(camera.getPos().negative())).getVec().getZ();
+            if (d < min) {
+                min = d;
+            }
+        }
+        return min;
+    }
+
+    public double averageDepth(Face f) {
+        double totalDepth = 0;
+        for (Vec3 v : f.getVertices()) {
+            totalDepth += camera.getRot().untransform(v.add(camera.getPos().negative())).getVec().getZ();
+        }
+
+        return totalDepth/f.getVertices().size();
+    }
 
 }

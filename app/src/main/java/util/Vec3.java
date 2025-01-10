@@ -84,5 +84,10 @@ public void normalize() {
     if (norm() == 0) { return; }
     scaleThis(1/norm());
 }
+public Vec3 normalized() {
+  double n = norm();
+  //this should never have a quat of length 0 anyways
+  return scale(1/n);
+}
 
 }
