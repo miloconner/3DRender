@@ -116,6 +116,7 @@ public class GameApp extends Application {
 
                 // paintScene(g, 100, 500, Math.PI*2/3);
                 depthSortDisplay(g, 100, 500, Math.PI*2/3);
+                // pixelPaint(g, 500);
 
             }
         };
@@ -125,6 +126,36 @@ public class GameApp extends Application {
     }
 
     //here i want to add a much more complex but hopefully accurate method using pixels
+    public void pixelPaint(GraphicsContext g, double far) {
+        int width = (int)g.getCanvas().getWidth();
+        int height = (int)g.getCanvas().getHeight();
+
+        double[][] depths = new double[width][height];
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                depths[x][y] = far;
+            }
+        }
+
+        WritableImage screenImg = new WritableImage(width, height);
+        PixelWriter pixelWriter = screenImg.getPixelWriter();
+
+        //first attempt (check each pixel for a face then find min depth of faces at pixel)
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                // pixelWriter.setColor(x, y, Color.WHITE);
+                for (Face f : faces) {
+                    Vec2 xy = new Vec2(x, y);
+                    if (f.projected(camera, origin).contains(xy) && f.depthAt(xy) < depths[x][y]) {
+                        depths[x][y] = f.projected(camera, origin).depthAt(xy);
+                        pixelWriter.setColor(x, y, f.getColor());
+                    }
+                }
+            }
+        }
+
+        g.drawImage(screenImg, 0, 0);
+    }
 
     public void paintScene(GraphicsContext g, double near, double far, double fov) {
 
@@ -133,7 +164,7 @@ public class GameApp extends Application {
             unpainted.add(faces.get(i));
         }
 
-        for (int z = (int)Math.round(far + camera.getRot().untransform(camera.getPos()).getVec().getZ()); z > (int)Math.round(near + camera.getRot().untransform(camera.getPos()).getVec().getZ()); z--) {
+        for (int z = (int)Math.round(far + camera.transform(camera.getPos()).getZ()); z > (int)Math.round(near + camera.getRot().untransform(camera.getPos()).getVec().getZ()); z--) {
             ArrayList<Face> painted = new ArrayList<>();
             for (Face f : unpainted) {
                 for (Vec3 v : f.getVertices()) {

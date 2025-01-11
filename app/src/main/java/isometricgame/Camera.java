@@ -8,6 +8,9 @@ public class Camera {
     private Quat rot;
     private Vec3 pos;
 
+    private double near = 100;
+    private double fov = Math.PI/2;
+
     public Camera() {
         rot = new Quat();
         pos = new Vec3();
@@ -15,8 +18,7 @@ public class Camera {
 
     public Camera(Quat rot, Vec3 pos) {
         this.rot = rot;
-        this.pos = new Vec3();
-        this.pos.set(pos.getX(), pos.getY(), pos.getZ());
+        this.pos = pos.clone();
     }
 
     public Vec3 getPos() { return pos; }
@@ -34,7 +36,7 @@ public class Camera {
         return transformed.getVec();
     }
 
-    public Vec2 project(Vec3 vec, double near, double fov, Vec3 origin) {
+    public Vec2 project(Vec3 vec, Vec3 origin) {
         Vec3 transformed = transform(vec);
         double scale = near * Math.tan(fov / 2);
         double x = (scale * transformed.getX()) / transformed.getZ();

@@ -12,6 +12,11 @@ public class Vec3 {
     y = 0;
     z = 0;
   }
+  public Vec3(Vec2 v, double z) {
+    this.x = v.getX();
+    this.y = v.getY();
+    this.z = z;
+  }
   public static Vec3 random(double mag) {
     return new Vec3((Math.random()-0.5)*mag, (Math.random()-0.5)*mag, (Math.random()-0.5)*mag);
   }
