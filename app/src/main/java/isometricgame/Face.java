@@ -17,6 +17,12 @@ public class Face {
     private Color fill;
     private Face parent = null;
     
+    /**
+     * Creates a face according to XYZ coords given by verts with stroke and fill specified
+     * @param verts
+     * @param stroke
+     * @param fill
+     */
     public Face(ArrayList<Vec3> verts, Color stroke, Color fill) {
         this.verts = verts;
         xPoints = new double[verts.size()];
@@ -25,6 +31,14 @@ public class Face {
         this.fill = fill;
     }
 
+    /**
+     * Creates a face according to XYZ coords given by verts with stroke and fill specified
+     * Parents specified in order to have a true 3D face to reference, this is meant for a 2D projected face
+     * @param verts
+     * @param stroke
+     * @param fill
+     * @param parent
+     */
     public Face(ArrayList<Vec3> verts, Color stroke, Color fill, Face parent) {
         this.verts = verts;
         xPoints = new double[verts.size()];
@@ -38,6 +52,10 @@ public class Face {
         return verts;
     }
 
+    /**
+     * Takes the cross product of two edges of the face in order to find the normal vector
+     * @return Vec3 normal
+     */
     public Vec3 normal() {
         Vec3 edge1 = verts.get(2).add(verts.get(1).negative());
         Vec3 edge2 = verts.get(3).add(verts.get(1).negative());
@@ -52,6 +70,12 @@ public class Face {
         return fill;
     }
 
+    /**
+     * Uses Camera cam to project vertices of the face into 2D
+     * @param cam
+     * @param origin
+     * @return Face that has been projected to 2D coordinates
+     */
     public Face projected(Camera cam, Vec3 origin) {
         ArrayList<Vec3> projectedVerts = verts.stream().map(v -> 
         new Vec3(cam.project(v, origin), 0)
@@ -59,15 +83,26 @@ public class Face {
         return new Face(projectedVerts, stroke, fill, parent);
     }
 
+    /**
+     * Checks if face contains coordinates xy, intended for a 2D face
+     * @param xy
+     * @return boolean that checks if Face equation holds true and checks if point is inside polygon
+     */
     public boolean contains(Vec2 xy) {
         Vec3 edge1 = verts.get(2).add(verts.get(1).negative());
         double A = normal().getX();
         double B = normal().getY();
         double D = normal().dot(edge1);
-        return A*xy.getX() + B*xy.getY() + D == 0 && isPointInsidePolygon(verts, xy);
+        return A*xy.getX() + B*xy.getY() + D == 0 && pointInPoly(verts, xy);
     }
 
-    private boolean isPointInsidePolygon(List<Vec3> vertices, Vec2 point) {
+    /**
+     * Mathematically uses verts to construct a polygon and determines if point falls inside of polygons bounds 
+     * @param vertices
+     * @param point
+     * @return boolean if inside of polygon
+     */
+    private boolean pointInPoly(List<Vec3> vertices, Vec2 point) {
     boolean inside = false;
     for (int i = 0, j = vertices.size() - 1; i < vertices.size(); j = i++) {
         Vec3 vi = vertices.get(i);
@@ -80,7 +115,11 @@ public class Face {
     return inside;
 }
 
-    //WILL NOT WORK QUITE RIGHT, need to use transformed coordinates from camera
+    /**
+     * Finds 3D representation of a face and then uses Face formula to find the z value at given XY
+     * @param xy
+     * @return double z value/ depth
+     */
     public double depthAt(Vec2 xy) {
         Face toUse = this;
         if (parent != null) { toUse = parent ; }
@@ -94,6 +133,14 @@ public class Face {
         return (-A*x - B*y - D)/C;
     }
 
+    /**
+     * outdated method that can draw a polygon in shape of face given a camera
+     * @param g
+     * @param cam
+     * @param near
+     * @param fov
+     * @param origin
+     */
     public void display(GraphicsContext g, Camera cam, double near, double fov, Vec3 origin) {
         for (int i = 0; i < verts.size(); i++) {
             Vec2 projVec = cam.project(verts.get(i), origin);

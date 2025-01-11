@@ -125,7 +125,11 @@ public class GameApp extends Application {
 
     }
 
-    //here i want to add a much more complex but hopefully accurate method using pixels
+    /**
+     * Paints pixels onto the screen by checking every pixel and finding the depth of any face that exists at that point and paints it the color of the face
+     * @param g
+     * @param far
+     */
     public void pixelPaint(GraphicsContext g, double far) {
         int width = (int)g.getCanvas().getWidth();
         int height = (int)g.getCanvas().getHeight();
@@ -157,6 +161,13 @@ public class GameApp extends Application {
         g.drawImage(screenImg, 0, 0);
     }
 
+    /**
+     * Paints the screen by drawing polygons in order from back to front according to Camera coordinates
+     * @param g
+     * @param near
+     * @param far
+     * @param fov
+     */
     public void paintScene(GraphicsContext g, double near, double far, double fov) {
 
         ArrayList<Face> unpainted = new ArrayList<>();
@@ -181,6 +192,13 @@ public class GameApp extends Application {
         }
     }
 
+    /**
+     * Paints the screen by sorting faces in order of their average depth away from camera and then painting
+     * @param g
+     * @param near
+     * @param far
+     * @param fov
+     */
     public void depthSortDisplay(GraphicsContext g, double near, double far, double fov) {
         ArrayList<Face> unpainted = new ArrayList<>(faces);
         
