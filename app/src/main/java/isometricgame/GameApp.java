@@ -3,6 +3,8 @@ package isometricgame;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -115,8 +117,8 @@ public class GameApp extends Application {
                 }
 
                 // paintScene(g, 100, 500, Math.PI*2/3);
-                depthSortDisplay(g, 100, 500, Math.PI*2/3);
-                // pixelPaint(g, 500);
+                // depthSortDisplay(g, 100, 500, Math.PI*2/3);
+                pixelPaint(g, 200);
 
             }
         };
@@ -144,15 +146,20 @@ public class GameApp extends Application {
         WritableImage screenImg = new WritableImage(width, height);
         PixelWriter pixelWriter = screenImg.getPixelWriter();
 
+        List<Face> transformedFaces = faces.stream()
+            .map(f -> f.transformed(camera, origin))
+            .collect(Collectors.toList());
+
         //first attempt (check each pixel for a face then find min depth of faces at pixel)
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 // pixelWriter.setColor(x, y, Color.WHITE);
-                for (Face f : faces) {
+                for (Face f : transformedFaces) {
                     Vec2 xy = new Vec2(x, y);
-                    if (f.projected(camera, origin).contains(xy) && f.depthAt(xy) < depths[x][y]) {
-                        depths[x][y] = f.projected(camera, origin).depthAt(xy);
+                    if (f.projected(camera, origin).contains(xy) && Math.abs(f.depthAt(xy)) < depths[x][y]) {
+                        depths[x][y] = Math.abs(f.depthAt(xy));
                         pixelWriter.setColor(x, y, f.getColor());
+                        // System.out.println(f.depthAt(xy));
                     }
                 }
             }
@@ -160,6 +167,45 @@ public class GameApp extends Application {
 
         g.drawImage(screenImg, 0, 0);
     }
+
+//     public void pixelPaint(GraphicsContext g, double far) {
+//     int width = (int) g.getCanvas().getWidth();
+//     int height = (int) g.getCanvas().getHeight();
+
+//     double[][] depths = new double[width][height];
+//     for (int x = 0; x < width; x++) {
+//         for (int y = 0; y < height; y++) {
+//             depths[x][y] = far;
+//         }
+//     }
+
+//     WritableImage screenImg = new WritableImage(width, height);
+//     PixelWriter pixelWriter = screenImg.getPixelWriter();
+
+//     // Sort faces by depth
+//     List<Face> sortedFaces = faces.stream()
+//         .sorted((f1, f2) -> Double.compare(
+//             averageDepth(f2.transformed(camera)), // farther first
+//             averageDepth(f1.transformed(camera))) // nearer first
+//         )
+//         .collect(Collectors.toList());
+
+//     for (Face f : sortedFaces) {
+//         Face projectedFace = f.transformed(camera).projected(camera, origin);
+//         for (int x = 0; x < width; x++) {
+//             for (int y = 0; y < height; y++) {
+//                 Vec2 xy = new Vec2(x, y);
+//                 if (projectedFace.contains(xy) && f.transformed(camera).projected(camera, origin).depthAt(xy) < depths[x][y]) {
+//                     depths[x][y] = f.transformed(camera).projected(camera, origin).depthAt(xy);
+//                     pixelWriter.setColor(x, y, f.getColor());
+//                 }
+//             }
+//         }
+//     }
+
+//     g.drawImage(screenImg, 0, 0);
+// }
+
 
     /**
      * Paints the screen by drawing polygons in order from back to front according to Camera coordinates

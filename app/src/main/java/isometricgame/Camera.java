@@ -59,10 +59,10 @@ public class Camera {
      * @return transformed and projected vec, adjusted by origin amount
      */
     public Vec2 project(Vec3 vec, Vec3 origin) {
-        Vec3 transformed = transform(vec);
+        // Vec3 transformed = transform(vec);
         double scale = near * Math.tan(fov / 2);
-        double x = (scale * transformed.getX()) / transformed.getZ();
-        double y = (scale * transformed.getY()) / transformed.getZ(); // flip y-axis
+        double x = (scale * vec.getX()) / vec.getZ();
+        double y = (scale * vec.getY()) / vec.getZ(); // flip y-axis
         return new Vec2(x + origin.getX(), y + origin.getY());
     }
 

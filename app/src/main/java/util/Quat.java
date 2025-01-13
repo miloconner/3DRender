@@ -1,7 +1,5 @@
 package util;
 
-import javax.management.Query;
-
 public class Quat {
     private double w;
     private Vec3 vec;

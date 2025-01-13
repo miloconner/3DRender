@@ -59,7 +59,7 @@ public class Face {
     public Vec3 normal() {
         Vec3 edge1 = verts.get(2).add(verts.get(1).negative());
         Vec3 edge2 = verts.get(3).add(verts.get(1).negative());
-        return edge1.cross(edge2);
+        return edge1.cross(edge2).normalized();
     }
 
     public void setRed(int amount) {
@@ -80,7 +80,19 @@ public class Face {
         ArrayList<Vec3> projectedVerts = verts.stream().map(v -> 
         new Vec3(cam.project(v, origin), 0)
         ).collect(Collectors.toCollection(ArrayList :: new));
-        return new Face(projectedVerts, stroke, fill, parent);
+        return new Face(projectedVerts, stroke, fill);
+    }
+
+    /**
+     * Uses Camera cam to transform verts
+     * @param cam
+     * @return Face that has been trasnformed without projection
+     */
+    public Face transformed(Camera cam, Vec3 origin) {
+        ArrayList<Vec3> projectedVerts = verts.stream().map(v -> 
+        cam.transform(v)
+        ).collect(Collectors.toCollection(ArrayList :: new));
+        return new Face(projectedVerts, stroke, fill);
     }
 
     /**
@@ -120,7 +132,7 @@ public class Face {
      * @param xy
      * @return double z value/ depth
      */
-    public double depthAt(Vec2 xy) {
+    public double depthAt(Vec2 xy) { //needs to be not world space, z at rot camera
         Face toUse = this;
         if (parent != null) { toUse = parent ; }
         Vec3 edge1 = toUse.verts.get(2).add(toUse.verts.get(1).negative());
@@ -143,7 +155,7 @@ public class Face {
      */
     public void display(GraphicsContext g, Camera cam, double near, double fov, Vec3 origin) {
         for (int i = 0; i < verts.size(); i++) {
-            Vec2 projVec = cam.project(verts.get(i), origin);
+            Vec2 projVec = cam.project(cam.transform(verts.get(i)), origin);
             xPoints[i] = projVec.getX();
             yPoints[i] = projVec.getY();
         }

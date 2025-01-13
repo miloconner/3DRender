@@ -89,7 +89,7 @@ public class Cube {
             for (int j = 0; j < faceIndices[i].length; j++) {
                 verts.add(conEndpoints[faceIndices[i][j]]);
             }
-            faces[i] = new Face(verts, Color.BLACK, new Color(1,0,0,1));
+            faces[i] = new Face(verts, Color.BLACK, new Color(i/6.0,0,0,1));
         }
     }
 
