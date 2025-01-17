@@ -101,7 +101,11 @@ public class Face {
      * @return boolean that checks if Face equation holds true and checks if point is inside polygon
      */
     public boolean contains(Vec2 xy) {
-        return pointInPoly(verts, xy);
+        Vec3 edge1 = verts.get(2).add(verts.get(1).negative());
+        double A = normal().getX();
+        double B = normal().getY();
+        double D = normal().dot(edge1);
+        return A*xy.getX() + B*xy.getY() + D == 0 && pointInPoly(verts, xy);
     }
 
     /**
@@ -129,29 +133,16 @@ public class Face {
      * @return double z value/ depth
      */
     public double depthAt(Vec2 xy) { //needs to be not world space, z at rot camera
-        if (parent != null) {
-            return parent.depthAt(xy);
-        }
-        
-        // Use barycentric coordinates to interpolate depth
-        Vec3 v0 = verts.get(0);
-        Vec3 v1 = verts.get(1);
-        Vec3 v2 = verts.get(2);
-        
-        double denominator = ((v1.getY() - v2.getY()) * (v0.getX() - v2.getX()) + 
-                             (v2.getX() - v1.getX()) * (v0.getY() - v2.getY()));
-        
-        if (denominator == 0) {
-            return v0.getZ(); // fallback if triangle is degenerate
-        }
-        
-        double a = ((v1.getY() - v2.getY()) * (xy.getX() - v2.getX()) + 
-                    (v2.getX() - v1.getX()) * (xy.getY() - v2.getY())) / denominator;
-        double b = ((v2.getY() - v0.getY()) * (xy.getX() - v2.getX()) + 
-                    (v0.getX() - v2.getX()) * (xy.getY() - v2.getY())) / denominator;
-        double c = 1 - a - b;
-        
-        return a * v0.getZ() + b * v1.getZ() + c * v2.getZ();
+        Face toUse = this;
+        if (parent != null) { toUse = parent ; }
+        Vec3 edge1 = toUse.verts.get(2).add(toUse.verts.get(1).negative());
+        double A = toUse.normal().getX();
+        double B = toUse.normal().getY();
+        double C = toUse.normal().getZ();
+        double D = toUse.normal().dot(edge1);
+        double x = xy.getX();
+        double y = xy.getY();
+        return (-A*x - B*y - D)/C;
     }
 
     /**

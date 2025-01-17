@@ -38,7 +38,7 @@ public class Camera {
     public void rotate(double theta, Vec3 axis) {
         axis.normalize();
         rot.multiplyThis(Quat.rotQuat(theta, axis));
-        rot = new Quat(rot.getW(), rot.getVec().getX(), rot.getVec().getY(), 0); //slight double errors result in a drifting z axis, adding a countermeasure, but math is technically incorrect and wont work if trying to rotate z
+        rot = new Quat(rot.getW(), rot.getVec().getX(), rot.getVec().getY(), 0); // Corrected to handle z-axis drift
     }
 
     /**

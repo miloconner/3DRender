@@ -28,11 +28,10 @@ public class Quat {
     }
 
     public void multiplyThis(Quat other) {
-        Quat ret = new Quat();
-        ret.w = w * other.w - vec.dot(other.vec);
-        ret.vec = other.vec.scale(w).add(vec.scale(other.w)).add(vec.cross(other.vec));
-        w = ret.w;
-        vec = ret.vec;
+        double newW = w * other.w - vec.dot(other.vec);
+        Vec3 newVec = other.vec.scale(w).add(vec.scale(other.w)).add(vec.cross(other.vec));
+        w = newW;
+        vec = newVec;
     }
     public Quat multiply(Quat other) {
         Quat ret = new Quat();
@@ -84,6 +83,6 @@ public class Quat {
     public double getW() { return w; }
 
     public Quat conjugate() {
-        return new Quat(w, -vec.getX(), -vec.getY(), -vec.getZ());
+        return new Quat(w, vec.negative());
     }
 }

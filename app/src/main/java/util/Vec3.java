@@ -35,7 +35,7 @@ public class Vec3 {
   }
 
   public Vec3 negative() {
-    return new Vec3(-x, -y, -z);
+    return clone().scale(-1);
   }
 
   public String toString() {
@@ -91,7 +91,9 @@ public void normalize() {
 }
 public Vec3 normalized() {
   double n = norm();
-  //this should never have a quat of length 0 anyways
+  if (n == 0) {
+    return new Vec3(0, 0, 0);
+  }
   return scale(1/n);
 }
 

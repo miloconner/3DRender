@@ -24,7 +24,6 @@ public class Cube {
     * </ul>
     */
     private Vec3[] conEndpoints;
-    private Vec2[] visEndpoints = new Vec2[8];
 
     private Vec3 pos;
 
