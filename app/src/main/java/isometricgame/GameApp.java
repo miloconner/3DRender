@@ -2,7 +2,6 @@ package isometricgame;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,7 +10,6 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.StackPane;
@@ -57,6 +55,8 @@ public class GameApp extends Application {
 
         Cube nCube = new Cube(origin.getX() + 1, origin.getY() + 1, origin.getZ() + 100, 60.0, faces);
         cubes.add(nCube);
+        // Cube oCube = new Cube(origin.getX() + 1, origin.getY() + 1, -origin.getZ() - 100, 60.0, faces);
+        // cubes.add(oCube);
 
         Vec2 lastPos = new Vec2();
 
@@ -139,40 +139,24 @@ public class GameApp extends Application {
         double[][] depths = new double[width][height];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                depths[x][y] = far;
+                depths[x][y] = far; // Initialize depths to far plane
             }
         }
 
         WritableImage screenImg = new WritableImage(width, height);
         PixelWriter pixelWriter = screenImg.getPixelWriter();
 
-        // Transform and sort faces by depth
-        List<Face> sortedFaces = faces.stream()
-            .map(f -> f.transformed(camera, origin))
-            .sorted((f1, f2) -> Double.compare(averageDepth(f2), averageDepth(f1)))
+        List<Face> transformedFaces = faces.stream()
+            .map(f -> f.transformed(camera, origin).projected(camera, origin))
             .collect(Collectors.toList());
 
-        // Paint from back to front
-        for (Face f : sortedFaces) {
-            Face projectedFace = f.projected(camera, origin);
-            // Get bounding box of the face
-            double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE;
-            double maxX = Double.MIN_VALUE, maxY = Double.MIN_VALUE;
-            
-            for (Vec3 v : projectedFace.getVertices()) {
-                minX = Math.min(minX, v.getX());
-                minY = Math.min(minY, v.getY());
-                maxX = Math.max(maxX, v.getX());
-                maxY = Math.max(maxY, v.getY());
-            }
-
-            // Only check pixels within the bounding box
-            for (int x = (int)Math.max(0, minX); x < Math.min(width, maxX + 1); x++) {
-                for (int y = (int)Math.max(0, minY); y < Math.min(height, maxY + 1); y++) {
-                    Vec2 xy = new Vec2(x, y);
-                    if (projectedFace.contains(xy)) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Vec2 xy = new Vec2(x, y);
+                for (Face f : transformedFaces) {
+                    if (f.contains(xy)) {
                         double depth = f.depthAt(xy);
-                        if (depth > 0 && depth < depths[x][y]) {
+                        if (depth < depths[x][y] && depth > 0) {
                             depths[x][y] = depth;
                             pixelWriter.setColor(x, y, f.getColor());
                         }

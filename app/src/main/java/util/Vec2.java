@@ -14,6 +14,10 @@ public class Vec2 {
     return new Vec2((Math.random()-0.5)*mag, (Math.random()-0.5)*mag);
   }
 
+  public Vec3 toVec3() {
+    return new Vec3(this.x, this.y, 0);
+  }
+
   public Vec2 clone() {
     return new Vec2(this.x, this.y);
   }

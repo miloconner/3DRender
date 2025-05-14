@@ -1,12 +1,10 @@
 package isometricgame;
 
-import util.Vec2;
 import util.Vec3;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Cube {
@@ -92,11 +90,6 @@ public class Cube {
         }
     }
 
-    // public static Cube newOrthogonalCube(double xCenter, double yCenter, double zCenter) {
-    //     Cube c = new Cube(xCenter, yCenter, zCenter, 60.0, gameFaces);
-    //     return c;
-    // }
-
     public Cube clone() {
         Cube ret = new Cube(pos.getX(), pos.getY(), pos.getZ(), size, gameFaces);
         for (int i = 0; i < conEndpoints.length; i++) {
@@ -105,9 +98,4 @@ public class Cube {
         return ret;
     }
 
-    // public void display(GraphicsContext g, Camera cam, double near, double fov, Vec3 origin) {
-    //     for (Face face : faces) {
-    //         face.display(g, cam, near, fov, origin);
-    //     }
-    // }
 }
