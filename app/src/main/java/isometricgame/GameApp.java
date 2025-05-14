@@ -2,21 +2,17 @@ package isometricgame;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseButton;
 import util.Quat;
 import util.Vec2;
 import util.Vec3;
@@ -116,9 +112,9 @@ public class GameApp extends Application {
                     }
                 }
 
-                // paintScene(g, 100, 500, Math.PI*2/3);
+                paintScene(g, 100, 500, Math.PI*2/3);
                 // depthSortDisplay(g, 100, 500, Math.PI*2/3);
-                pixelPaint(g, 200);
+                // pixelPaint(g, 200);
 
             }
         };
@@ -132,41 +128,41 @@ public class GameApp extends Application {
      * @param g
      * @param far
      */
-    public void pixelPaint(GraphicsContext g, double far) {
-        int width = (int) g.getCanvas().getWidth();
-        int height = (int) g.getCanvas().getHeight();
+    // public void pixelPaint(GraphicsContext g, double far) {
+    //     int width = (int) g.getCanvas().getWidth();
+    //     int height = (int) g.getCanvas().getHeight();
 
-        double[][] depths = new double[width][height];
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                depths[x][y] = far; // Initialize depths to far plane
-            }
-        }
+    //     double[][] depths = new double[width][height];
+    //     for (int x = 0; x < width; x++) {
+    //         for (int y = 0; y < height; y++) {
+    //             depths[x][y] = far; // Initialize depths to far plane
+    //         }
+    //     }
 
-        WritableImage screenImg = new WritableImage(width, height);
-        PixelWriter pixelWriter = screenImg.getPixelWriter();
+    //     WritableImage screenImg = new WritableImage(width, height);
+    //     PixelWriter pixelWriter = screenImg.getPixelWriter();
 
-        List<Face> transformedFaces = faces.stream()
-            .map(f -> f.transformed(camera, origin).projected(camera, origin))
-            .collect(Collectors.toList());
+    //     List<Face> transformedFaces = faces.stream()
+    //         .map(f -> f.transformed(camera, origin).projected(camera, origin))
+    //         .collect(Collectors.toList());
 
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                Vec2 xy = new Vec2(x, y);
-                for (Face f : transformedFaces) {
-                    if (f.contains(xy)) {
-                        double depth = f.depthAt(xy);
-                        if (depth < depths[x][y] && depth > 0) {
-                            depths[x][y] = depth;
-                            pixelWriter.setColor(x, y, f.getColor());
-                        }
-                    }
-                }
-            }
-        }
+    //     for (int x = 0; x < width; x++) {
+    //         for (int y = 0; y < height; y++) {
+    //             Vec2 xy = new Vec2(x, y);
+    //             for (Face f : transformedFaces) {
+    //                 if (f.contains(xy)) {
+    //                     double depth = f.depthAt(xy);
+    //                     if (depth < depths[x][y] && depth > 0) {
+    //                         depths[x][y] = depth;
+    //                         pixelWriter.setColor(x, y, f.getColor());
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
 
-        g.drawImage(screenImg, 0, 0);
-    }
+    //     g.drawImage(screenImg, 0, 0);
+    // }
 
     /**
      * Paints the screen by drawing polygons in order from back to front according to Camera coordinates
